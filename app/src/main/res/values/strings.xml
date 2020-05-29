@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Image to Text</string>
+    <string name="detected_text">Detected Text:</string>
+    <string name="take_img">Take Image</string>
+    <string name="detect_text">Detect Text</string>
+    <string name="please_wait">Please wait...</string>
+</resources>
