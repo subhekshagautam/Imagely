@@ -1,2 +1,6 @@
-visa
-passport
+Singapore Passport
+Indian Visa
+Chinese Passport
+Indian Passport
+Chinese Visa
+Singapore Visa

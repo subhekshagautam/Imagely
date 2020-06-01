@@ -3,12 +3,12 @@ package com.imageli;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,12 +27,11 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel;
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler;
 import com.google.firebase.ml.vision.label.FirebaseVisionOnDeviceAutoMLImageLabelerOptions;
+import com.imageli.databinding.ActivityClassificationBinding;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.IOException;
 import java.util.List;
-
-import np.com.vikashparajuli.imagetotext.R;
 
 public class ClassificationActivity extends AppCompatActivity {
     FirebaseAutoMLRemoteModel remoteModel; // For loading the model remotely
@@ -41,26 +40,31 @@ public class ClassificationActivity extends AppCompatActivity {
     ProgressDialog progressDialog; //Show the progress dialog while model is downloading...
     FirebaseModelDownloadConditions conditions; //Conditions to download the model
     FirebaseVisionImage image; // preparing the input image
-    TextView textView; // Displaying the label for the input image
-    Button button; // To select the image from device
-    ImageView imageView; //To display the selected image
     private FirebaseAutoMLLocalModel localModel;
+
+    private ActivityClassificationBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide slide = new Slide();
+            slide.setSlideEdge(Gravity.RIGHT);
+            getWindow().setEnterTransition(slide);
+        }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_classification);
-        textView = findViewById(R.id.text);
-        button = findViewById(R.id.selectImage);
-        imageView = findViewById(R.id.image);
+
+        //binding the layout activity_main
+        binding = ActivityClassificationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        setTitle(getString(R.string.image_labeling));
         progressDialog = new ProgressDialog(ClassificationActivity.this);
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCanceledOnTouchOutside(false);
-        button.setOnClickListener(new View.OnClickListener() {
+        binding.btnSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CropImage.activity().start(ClassificationActivity.this);
-                //   fromRemoteModel();
             }
         });
     }
@@ -90,8 +94,8 @@ public class ClassificationActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 if (result != null) {
                     Uri uri = result.getUri(); //path of image in phone
-                    imageView.setImageURI(uri); //set image in imageview
-                    textView.setText(""); //so that previous text don't get append with new one
+                    binding.ivImage.setImageURI(uri); //set image in imageview
+                    binding.tvShowResult.setText(""); //so that previous text don't get append with new one
                     setLabelerFromLocalModel(uri);
                 } else
                     progressDialog.cancel();
@@ -108,7 +112,7 @@ public class ClassificationActivity extends AppCompatActivity {
                 for (FirebaseVisionImageLabel label : task.getResult()) {
                     String eachlabel = label.getText().toUpperCase();
                     float confidence = label.getConfidence();
-                    textView.append(eachlabel + " - " + ("" + confidence * 100).subSequence(0, 4) + "%" + "\n\n");
+                    binding.tvShowResult.append(eachlabel + " - " + ("" + confidence * 100).subSequence(0, 4) + "%" + "\n\n");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -118,5 +122,13 @@ public class ClassificationActivity extends AppCompatActivity {
                 Toast.makeText(ClassificationActivity.this, "Something went wrong! " + e, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        }
     }
 }

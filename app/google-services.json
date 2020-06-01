@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:714593286976:android:84d6977f026900e76c58a5",
+        "mobilesdk_app_id": "1:714593286976:android:0161fabdedf7b34b6c58a5",
         "android_client_info": {
-          "package_name": "np.com.vikashparajuli.imagetotext"
+          "package_name": "com.imageli"
         }
       },
       "oauth_client": [

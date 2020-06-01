@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="np.com.vikashparajuli.imagetotext">
+    package="com.imageli">
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -17,13 +17,14 @@
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="ocr" />
         
-        <activity android:name="com.imageli.MainActivity">
+        <activity android:name="com.imageli.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.imageli.ExtractTextActivity" />
         <activity android:name="com.imageli.ClassificationActivity" />
 
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
